@@ -46,5 +46,25 @@ public class ContainerService : IContainerService
             return containers;
         }
     }
+
+    public bool AddContainer(Container container)
+    {
+        const string insertString = "INSERT INTO Containers (ContainerTypeID, IsHazaerdous, ContainerName) VALUES (@ContainerTypeID, @IsHazaerdous, @ContainerName)";
+
+        int countRowsAdded = -1;
+        
+        using (SqlConnection connection = new SqlConnection(_connectionString))
+        {
+            SqlCommand command = new SqlCommand(insertString, connection);
+            command.Parameters.AddWithValue("@ContainerTypeID", container.ContainerTypeID);
+            command.Parameters.AddWithValue("@IsHazaerdous", container.IsHazaerdous);
+            command.Parameters.AddWithValue("@ContainerName", container.ContainerName);
+
+            connection.Open();
+            countRowsAdded = command.ExecuteNonQuery();
+        }
+        
+        return countRowsAdded != -1;
+    }
     
 }
